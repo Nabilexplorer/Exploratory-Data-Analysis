@@ -1,0 +1,95 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import warnings
+warnings.filterwarnings('ignore')
+
+#Loading Dataset
+
+df=pd.read_csv('gplay.csv')
+df
+
+df=df.drop('Unnamed: 0',axis=1)
+
+#Checking null values
+
+df.isnull().sum()
+
+df.dtypes
+
+#Visualization
+plt.figure(figsize=(10,12))
+sns.heatmap(df.isnull())
+plt.show()
+
+df.sample(10)
+
+#Rating has a Type as Float which seems correct
+#Price shows Object but it has numbers in it
+
+#Checking Null Values in Ratings
+
+df.shape
+
+#Finding the percentage of Null Values in each column 
+#Taking Sum of all rows first and then dividing it with each column
+
+df.isnull().sum()*100/df.shape[0]
+
+#To fill Null Values of Rating Column with Mean of Ratings
+m1=df['Rating'].mean()
+df['Rating'].fillna(m1,inplace=True)
+
+df.isnull().sum()
+df['Type'].value_counts()
+df['Installs'].value_counts()
+
+df['Type'].fillna('Free',inplace=True)
+df['Type'].replace('0','Free',inplace=True)
+
+df.isnull().sum()
+
+df['Type'].value_counts()
+df['Content Rating'].value_counts()
+
+df['Price'].unique()
+
+#Filling Null Values and 0 in Content Rating
+df['Content Rating'].fillna('Everyone',inplace=True)
+df.isnull().sum()
+
+#Replacing 'Everyone' value of Price Column with 0
+df['Price'].replace('Everyone','0',inplace=True)
+df['Price'].unique()
+
+#To Remove  $ sign from left in price column
+df['Price']=df['Price'].map(lambda X:X.lstrip('$'))
+
+df['Price'].unique()
+df['Price'].dtype
+
+#To change data type of price column from Object oto Float permanent
+df['Price']=df['Price'].astype('float')
+df['Price'].dtype
+
+df['Installs'].unique()
+#Removing MB from data of Size Column
+df['Size']=df['Size'].map(lambda X:X.rstrip('M'))
+df['Size'].unique()
+df['Size'].value_counts().unique()
+
+#First remove k in size column after that change the unit of size column from
+#k to M divided by 1024.
+#convert kb to MB
+
+df["Size"]=df["Size"].map(lambda X :str(round((float(X.rstrip('k'))/1024),1)) 
+                          if X[-1]=='k' else X)
+
+#lambda input: expression if condition else expression2
+
+df['Size'].unique()
+
+df['Size'].value_counts()
+
+df.shape
