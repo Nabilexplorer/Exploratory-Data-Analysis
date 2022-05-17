@@ -1,0 +1,133 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import warnings
+warnings.filterwarnings('ignore')
+
+auto=pd.read_csv('Automobile_data.csv')
+
+auto.head()
+
+auto.shape
+
+#Checking Null Values
+auto.isnull().sum()
+
+#Visualizing Null Values
+sns.heatmap(auto.isnull())
+plt.show()
+
+auto.dtypes
+
+#Upon checking, we don't see any null values. However, noticed few of the concerns with the data set:-
+#Question Symbol in Normalized Losses column - Done
+#Normalized losses should be Int and not Object as it contains numbers - Done
+#Horsepower shiuld be INT as it contains numbers and not alphabets - Done
+#
+
+auto.tail()
+
+auto.sample(10)
+
+auto['make'].unique()
+
+auto['fuel-type'].value_counts().plot(kind='bar')
+plt.show()
+
+auto.columns
+
+column1=auto['normalized-losses']
+column1
+
+for col in auto.columns:
+    print('{} : {}'.format(col,auto[col].unique()))
+    
+ auto['normalized-losses'].replace('?',np.nan,inplace=True)
+ auto.isnull().sum()
+ 
+ auto['normalized-losses']=auto['normalized-losses'].astype('float')
+ 
+ auto.dtypes
+ 
+ m1=int(auto['normalized-losses'].mean())
+m1
+
+auto['normalized-losses'].fillna(m1,inplace=True)
+
+auto.isnull().sum()
+
+column1=auto['horsepower']
+column1
+
+c=0
+
+for index,v in enumerate(column1):
+    if not (v.isnumeric()):
+        print(index,' ',v)
+        c=c+1
+print(c)
+
+auto['horsepower'].replace('?',np.nan,inplace=True)
+
+auto.isnull().sum()
+
+auto['horsepower'].astype('float')
+auto.dtypes
+
+auto['horsepower']=auto['horsepower'].astype('float')
+hm1=int(auto['horsepower'].mean())
+hm1
+
+auto['horsepower'].fillna(hm1,inplace=True)
+
+auto.dtypes
+
+#Checking Outliers in DataSet
+sns.boxplot(data=auto,x='price')
+plt.show()
+
+sns.heatmap(auto.corr(),annot=True)
+plt.show()
+
+X=auto[['engine-size']] #Input
+Y=auto['price'] #output
+
+from sklearn.linear_model import LinearRegression
+
+lr=LinearRegression()
+
+lr.fit(X,Y)
+
+m=lr.coef_
+m
+
+c=lr.intercept_
+c
+
+y_predict=lr.predict([[200]])
+y_predict
+
+#Working with multiple inputs
+
+columns=['engine-size','horsepower','city-mpg']
+auto.columns
+
+plt.figure(figsize=(10,10))
+
+for i, col in enumerate(columns):
+    plt.subplot(2,2,i+1)
+    sns.scatterplot(data=auto,x=col,y='price')
+plt.show()
+
+X=auto[['engine-size','horsepower','city-mpg']]  #Inputs
+Y=auto['price'] #output
+
+from sklearn.preprocessing import StandardScaler
+
+#Creating Object 
+
+ss=StandardScaler()
+
+X=ss.fit_transform(X)
+print(X)
